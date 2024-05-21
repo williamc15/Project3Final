@@ -1,21 +1,28 @@
-# project3.py
-#
-# ICS 33 Spring 2024
-# Project 3: Why Not Smile?
-#
-# The main module that executes your Grin interpreter.
-#
-# WHAT YOU NEED TO DO: You'll need to implement the outermost shell of your
-# program here, but consider how you can keep this part as simple as possible,
-# offloading as much of the complexity as you can into additional modules in
-# the 'grin' package, isolated in a way that allows you to unit test them.
-
 import grin
+from grin import interpreter
 
+def read_grin_program() -> iter:
+    """Reads lines of input from the standard input until the end-of-program marker is encountered."""
+    lines = []
+    while True:
+        line = input()
+        if line == '.':
+            break
+        lines.append(line)
+    return iter(lines)
 
-def main() -> None:
-    pass
+def main():
+    """The main entry point for the Grin interpreter."""
+    try:
+        program_lines = read_grin_program()
+        tokens_per_line = grin.parse(program_lines)
+        interpreter.interpret(tokens_per_line)
+    except grin.GrinLexError as e:
+        print(e)
+    except grin.GrinParseError as e:
+        print(e)
+    except interpreter.GrinRuntimeError as e:
+        print(e)
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
